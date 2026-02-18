@@ -1,10 +1,8 @@
 import { createRoot } from "react-dom/client";
-import { MainView } from "./components/main-view/main-view"; // ky importon MainView-in tënd
-
-import "./index.scss";
+import { MainView } from "./components/main-view/main-view";
 
 const App = () => {
-  return <MainView />; // renderon MainView
+  return <MainView />;
 };
 
 const container = document.querySelector("#root");

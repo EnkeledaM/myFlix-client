@@ -1,49 +1,51 @@
-import { useState } from "react"; // state
-import { MovieCard } from "../movie-card/movie-card"; // kartë filmi
-import { MovieView } from "../movie-view/movie-view"; // detaje filmi
+import { useState } from "react";
+import { MovieCard } from "../movie-card/movie-card";
+import { MovieView } from "../movie-view/movie-view";
 
 export const MainView = () => {
-  // lista e filmave (mock data)
+  // Krijojmë URL string për fotot (Parcel-friendly)
+  const inceptionPoster = new URL("../../assets/inception.jpg", import.meta.url).href;
+  const matrixPoster = new URL("../../assets/matrix.jpg", import.meta.url).href;
+  const interstellarPoster = new URL("../../assets/interstellar.jpg", import.meta.url).href;
+
   const [movies] = useState([
     {
       id: 1,
       title: "Inception",
       description: "A mind-bending thriller.",
-      image: "https://via.placeholder.com/150",
+      image: inceptionPoster,
       genre: "Sci-Fi",
-      director: "Christopher Nolan"
+      director: "Christopher Nolan",
     },
     {
       id: 2,
       title: "The Matrix",
       description: "Reality is not what it seems.",
-      image: "https://via.placeholder.com/150",
+      image: matrixPoster,
       genre: "Action",
-      director: "Wachowski Sisters"
+      director: "Wachowski Sisters",
     },
     {
       id: 3,
       title: "Interstellar",
       description: "A journey through space and time.",
-      image: "https://via.placeholder.com/150",
+      image: interstellarPoster,
       genre: "Adventure",
-      director: "Christopher Nolan"
-    }
+      director: "Christopher Nolan",
+    },
   ]);
 
-  const [selectedMovie, setSelectedMovie] = useState(null); // filmi i klikuar
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // nëse kemi film të zgjedhur, shfaq MovieView
   if (selectedMovie) {
     return (
       <MovieView
         movie={selectedMovie}
-        onBackClick={() => setSelectedMovie(null)} // Back -> kthehu te lista
+        onBackClick={() => setSelectedMovie(null)}
       />
     );
   }
 
-  // përndryshe shfaq listën e filmave
   return (
     <div>
       <h1>myFlix</h1>
@@ -52,7 +54,7 @@ export const MainView = () => {
         <MovieCard
           key={movie.id}
           movie={movie}
-          onMovieClick={(newSelectedMovie) => setSelectedMovie(newSelectedMovie)} // ruaj filmin
+          onMovieClick={(m) => setSelectedMovie(m)}
         />
       ))}
     </div>
