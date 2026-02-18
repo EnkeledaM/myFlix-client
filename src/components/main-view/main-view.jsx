@@ -4,9 +4,9 @@ import { MovieView } from "../movie-view/movie-view";
 
 export const MainView = () => {
   // Krijojmë URL string për fotot (Parcel-friendly)
-  const inceptionPoster = new URL("../../assets/inception.jpg", import.meta.url).href;
-  const matrixPoster = new URL("../../assets/matrix.jpg", import.meta.url).href;
-  const interstellarPoster = new URL("../../assets/interstellar.jpg", import.meta.url).href;
+  const inceptionPoster = new URL("../../assets/inception.jpeg", import.meta.url).href;
+  const matrixPoster = new URL("../../assets/matrix.jpeg", import.meta.url).href;
+  const interstellarPoster = new URL("../../assets/interstellar.jpeg", import.meta.url).href;
 
   const [movies] = useState([
     {
