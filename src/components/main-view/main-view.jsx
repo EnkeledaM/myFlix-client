@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 
@@ -8,32 +9,23 @@ export const MainView = () => {
   const matrixPoster = new URL("../../assets/matrix.jpeg", import.meta.url).href;
   const interstellarPoster = new URL("../../assets/interstellar.jpeg", import.meta.url).href;
 
-  const [movies] = useState([
-    {
-      id: 1,
-      title: "Inception",
-      description: "A mind-bending thriller.",
-      image: inceptionPoster,
-      genre: "Sci-Fi",
-      director: "Christopher Nolan",
-    },
-    {
-      id: 2,
-      title: "The Matrix",
-      description: "Reality is not what it seems.",
-      image: matrixPoster,
-      genre: "Action",
-      director: "Wachowski Sisters",
-    },
-    {
-      id: 3,
-      title: "Interstellar",
-      description: "A journey through space and time.",
-      image: interstellarPoster,
-      genre: "Adventure",
-      director: "Christopher Nolan",
-    },
-  ]);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+  fetch("https://test-heroku-exercise-7495d54af436.herokuapp.com/movies")
+    .then((response) => response.json())
+    
+    .then((data) => {
+      console.log("✅ movies from API:", data);
+      setMovies(data);
+    })
+
+
+    .catch((error) => {
+      console.error("Error fetching movies:", error);
+    });
+}, []);
+
 
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -52,7 +44,9 @@ export const MainView = () => {
 
       {movies.map((movie) => (
         <MovieCard
-          key={movie.id}
+        
+          key={movie._id}
+
           movie={movie}
           onMovieClick={(m) => setSelectedMovie(m)}
         />
