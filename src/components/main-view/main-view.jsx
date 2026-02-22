@@ -81,17 +81,25 @@ export const MainView = () => {
   // ✅ Përndryshe shfaq listën e filmave
   return (
     <div>
-      <h1>myFlix</h1>
+    <Row className="align-items-center mt-3">
+       <Col>
+          <h1 className="m-0">myFlix</h1>
+  </Col>
+  <Col className="text-end">
+    <button className="btn btn-outline-secondary" onClick={handleLogout}>
+      Logout
+    </button>
+  </Col>
+</Row>
 
-      <button onClick={handleLogout}>Logout</button>
+      <Row className="g-4 mt-2">
+  {movies.map((movie) => (
+    <Col key={movie._id} xs={12} sm={6} md={4} lg={3}>
+      <MovieCard movie={movie} onMovieClick={(m) => setSelectedMovie(m)} />
+    </Col>
+  ))}
+</Row>
 
-      {movies.map((movie) => (
-        <MovieCard
-          key={movie._id}
-          movie={movie}
-          onMovieClick={(m) => setSelectedMovie(m)}
-        />
-      ))}
     </div>
   );
 };
