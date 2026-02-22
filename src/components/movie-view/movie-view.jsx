@@ -1,6 +1,9 @@
 
-import placeholder from "../../assets/interstellar.jpeg";
 import PropTypes from "prop-types";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import placeholder from "../../assets/interstellar.jpeg";
+
 export const MovieView = ({ movie, onBackClick }) => {
   if (!movie) return null;
 
@@ -42,16 +45,11 @@ export const MovieView = ({ movie, onBackClick }) => {
 
 MovieView.propTypes = {
   movie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
     Title: PropTypes.string.isRequired,
-    Description: PropTypes.string,
     ImagePath: PropTypes.string,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string
-    }),
-    Director: PropTypes.shape({
-      Name: PropTypes.string
-    })
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired
+    Description: PropTypes.string,
+    Genre: PropTypes.shape({ Name: PropTypes.string }),
+    Director: PropTypes.shape({ Name: PropTypes.string }),
+  }),
+  onBackClick: PropTypes.func.isRequired,
 };
