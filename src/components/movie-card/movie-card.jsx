@@ -10,8 +10,9 @@ export const MovieCard = ({ movie, onMovieClick }) => {
 
         <Button
           variant="primary"
+          size="sm"
           onClick={() => onMovieClick(movie)}
-          className="mt-auto"
+          className="mt-auto align-self-start"
         >
           Open
         </Button>
