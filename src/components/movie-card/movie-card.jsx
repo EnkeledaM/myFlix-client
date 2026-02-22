@@ -10,8 +10,8 @@ export const MovieCard = ({ movie, onMovieClick }) => {
 
         <Button
           variant="primary"
-          className="mt-auto align-self-start"
           onClick={() => onMovieClick(movie)}
+          className="mt-auto"
         >
           Open
         </Button>
@@ -21,6 +21,9 @@ export const MovieCard = ({ movie, onMovieClick }) => {
 };
 
 MovieCard.propTypes = {
-  movie: PropTypes.object.isRequired,
-  onMovieClick: PropTypes.func.isRequired
+  movie: PropTypes.shape({
+    Title: PropTypes.string,
+    _id: PropTypes.string,
+  }).isRequired,
+  onMovieClick: PropTypes.func.isRequired,
 };
