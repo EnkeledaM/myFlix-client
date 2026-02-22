@@ -1,6 +1,7 @@
 
-
-import PropTypes from "prop-types";                            // prop types
+import PropTypes from "prop-types";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 
 export const MovieCard = ({ movie, onMovieClick }) => {
   return (
@@ -29,16 +30,8 @@ export const MovieCard = ({ movie, onMovieClick }) => {
 
 MovieCard.propTypes = {
   movie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
+    _id: PropTypes.string,
     Title: PropTypes.string.isRequired,
-    Description: PropTypes.string,
-    ImagePath: PropTypes.string,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string
-    }),
-    Director: PropTypes.shape({
-      Name: PropTypes.string
-    })
   }).isRequired,
-  onMovieClick: PropTypes.func.isRequired
+  onMovieClick: PropTypes.func.isRequired,
 };
