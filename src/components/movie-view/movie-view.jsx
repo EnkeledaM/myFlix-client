@@ -1,5 +1,6 @@
-import placeholder from "../../assets/interstellar.jpeg";
 
+import placeholder from "../../assets/interstellar.jpeg";
+import PropTypes from "prop-types";
 export const MovieView = ({ movie, onBackClick }) => {
   if (!movie) return null;
 
@@ -24,4 +25,20 @@ export const MovieView = ({ movie, onBackClick }) => {
       <button onClick={onBackClick}>Back</button>
     </div>
   );
+};
+
+MovieView.propTypes = {
+  movie: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    Title: PropTypes.string.isRequired,
+    Description: PropTypes.string,
+    ImagePath: PropTypes.string,
+    Genre: PropTypes.shape({
+      Name: PropTypes.string
+    }),
+    Director: PropTypes.shape({
+      Name: PropTypes.string
+    })
+  }).isRequired,
+  onBackClick: PropTypes.func.isRequired
 };
