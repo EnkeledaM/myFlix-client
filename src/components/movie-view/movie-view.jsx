@@ -1,44 +1,55 @@
 
-import placeholder from "../../assets/interstellar.jpeg";
 import PropTypes from "prop-types";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import placeholder from "../../assets/interstellar.jpeg";
+
 export const MovieView = ({ movie, onBackClick }) => {
   if (!movie) return null;
 
   return (
-    <div>
-      <h1>{movie.Title}</h1>
+    <Card>
+      <Card.Header as="h5">{movie.Title}</Card.Header>
 
-      <img
+      <Card.Img
+        variant="top"
         src={movie.ImagePath}
         alt={movie.Title}
-        style={{ width: "150px" }}
+        style={{ maxHeight: "420px", objectFit: "cover" }}
         onError={(e) => {
-          e.currentTarget.onerror = null; // mos hyjë në loop
+          e.currentTarget.onerror = null;
           e.currentTarget.src = placeholder;
         }}
       />
 
-      <p><b>Description:</b> {movie.Description}</p>
-      <p><b>Genre:</b> {movie.Genre?.Name}</p>
-      <p><b>Director:</b> {movie.Director?.Name}</p>
+      <Card.Body>
+        <Card.Text>
+          <b>Description:</b> {movie.Description}
+        </Card.Text>
 
-      <button onClick={onBackClick}>Back</button>
-    </div>
+        <Card.Text>
+          <b>Genre:</b> {movie.Genre?.Name}
+        </Card.Text>
+
+        <Card.Text>
+          <b>Director:</b> {movie.Director?.Name}
+        </Card.Text>
+
+        <Button variant="secondary" onClick={onBackClick}>
+          Back
+        </Button>
+      </Card.Body>
+    </Card>
   );
 };
 
 MovieView.propTypes = {
   movie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
     Title: PropTypes.string.isRequired,
-    Description: PropTypes.string,
     ImagePath: PropTypes.string,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string
-    }),
-    Director: PropTypes.shape({
-      Name: PropTypes.string
-    })
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired
+    Description: PropTypes.string,
+    Genre: PropTypes.shape({ Name: PropTypes.string }),
+    Director: PropTypes.shape({ Name: PropTypes.string }),
+  }),
+  onBackClick: PropTypes.func.isRequired,
 };

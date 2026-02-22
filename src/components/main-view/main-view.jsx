@@ -6,6 +6,7 @@ import { SignupView } from "../signup-view/signup-view";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
@@ -65,10 +66,14 @@ export const MainView = () => {
   // ✅ Nëse është zgjedhur film → shfaq detajet
   if (selectedMovie) {
     return (
-      <MovieView
-        movie={selectedMovie}
-        onBackClick={() => setSelectedMovie(null)}
-      />
+      <Row className="justify-content-md-center">
+        <Col md={8}>
+          <MovieView
+            movie={selectedMovie}
+            onBackClick={() => setSelectedMovie(null)}
+          />
+        </Col>
+      </Row>
     );
   }
 
