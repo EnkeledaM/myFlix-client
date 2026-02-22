@@ -1,19 +1,36 @@
-import PropTypes from "prop-types";                            // prop types
+
+import PropTypes from "prop-types";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 
 export const MovieCard = ({ movie, onMovieClick }) => {
   return (
-    <div
-      onClick={() => onMovieClick(movie)}                      // click -> zgjedh filmin
-      style={{ cursor: "pointer", marginBottom: "10px" }}      // stil i thjeshtë
+    <Card
+      className="h-100"
+      style={{ cursor: "pointer" }}
+      onClick={() => onMovieClick(movie)}
     >
-      {movie.Title} {/* titulli nga API */}
-    </div>
+      <Card.Body className="d-flex flex-column">
+        <Card.Title>{movie.Title}</Card.Title>
+
+        <Button
+          variant="primary"
+          className="mt-auto"
+          onClick={(e) => {
+            e.stopPropagation(); // mos e thirr 2 herë click-in
+            onMovieClick(movie);
+          }}
+        >
+          Open
+        </Button>
+      </Card.Body>
+    </Card>
   );
 };
 
 MovieCard.propTypes = {
   movie: PropTypes.shape({
-    Title: PropTypes.string.isRequired,                          // Title duhet string
+    Title: PropTypes.string.isRequired,
   }).isRequired,
-  onMovieClick: PropTypes.func.isRequired,                       // duhet funksion
+  onMovieClick: PropTypes.func.isRequired,
 };

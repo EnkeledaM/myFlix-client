@@ -1,56 +1,62 @@
-import { useState, useEffect } from "react";
 
+import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+
 
 export const MainView = () => {
-  // Krijojmë URL string për fotot (Parcel-friendly)
-  const inceptionPoster = new URL("../../assets/inception.jpeg", import.meta.url).href;
-  const matrixPoster = new URL("../../assets/matrix.jpeg", import.meta.url).href;
-  const interstellarPoster = new URL("../../assets/interstellar.jpeg", import.meta.url).href;
+  console.log("✅ MainView po renderohet");
 
   const [movies, setMovies] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
-  fetch("https://test-heroku-exercise-7495d54af436.herokuapp.com/movies")
-    .then((response) => response.json())
-    
-    .then((data) => {
-      console.log("✅ movies from API:", data);
-      setMovies(data);
-    })
-
-
-    .catch((error) => {
-      console.error("Error fetching movies:", error);
-    });
-}, []);
-
-
-  const [selectedMovie, setSelectedMovie] = useState(null);
+    fetch("https://test-heroku-exercise-7495d54af436.herokuapp.com/movies")
+      .then((response) => {
+        if (!response.ok) {
+          console.log("Unauthorized – do vazhdojmë pa data");
+          return [];
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setMovies(data || []);
+      })
+      .catch((error) => {
+        console.error("Error fetching movies:", error);
+        setMovies([]);
+      });
+  }, []);
 
   if (selectedMovie) {
     return (
-      <MovieView
-        movie={selectedMovie}
-        onBackClick={() => setSelectedMovie(null)}
-      />
+      <Row className="justify-content-md-center">
+        <Col md={8}>
+          <MovieView
+            movie={selectedMovie}
+            onBackClick={() => setSelectedMovie(null)}
+          />
+        </Col>
+      </Row>
     );
   }
 
   return (
-    <div>
-      <h1>myFlix</h1>
+    <>
+      <h1 className="my-4">myFlix</h1>
 
-      {movies.map((movie) => (
-        <MovieCard
-        
-          key={movie._id}
-
-          movie={movie}
-          onMovieClick={(m) => setSelectedMovie(m)}
-        />
-      ))}
-    </div>
+      <Row>
+        {movies.map((movie) => (
+          <Col key={movie._id} md={3} className="mb-4">
+            <MovieCard
+              movie={movie}
+              onMovieClick={(m) => setSelectedMovie(m)}
+            />
+          </Col>
+        ))}
+      </Row>
+    </>
   );
 };
