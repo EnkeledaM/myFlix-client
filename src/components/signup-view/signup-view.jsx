@@ -1,5 +1,8 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
 export const SignupView = ({ onSignupSuccess, onBackClick }) => {
   const [username, setUsername] = useState("");
@@ -19,7 +22,7 @@ export const SignupView = ({ onSignupSuccess, onBackClick }) => {
       Username: username.trim(),
       Password: password,
       Email: email.trim(),
-      Birthday: birthday ? birthday : null, // nëse s’ka datë, dërgo null
+      Birthday: birthday || null,
     };
 
     try {
@@ -32,104 +35,109 @@ export const SignupView = ({ onSignupSuccess, onBackClick }) => {
         }
       );
 
-      // Lexo gjithmonë body (shpesh backend kthen mesazh gabimi si text/JSON)
       const text = await response.text();
       let json = null;
       try {
         json = JSON.parse(text);
-      } catch {
-        // ok nëse s’është JSON
-      }
+      } catch {}
 
       if (!response.ok) {
         const msg =
           (json && (json.message || json.error)) ||
           text ||
           `HTTP ${response.status}`;
-        setError(`Signup dështoi: ${msg}`);
+        setError(`Signup failed: ${msg}`);
         return;
       }
 
-      setSuccess("✅ Signup successful! Tani bëj login.");
+      setSuccess("Signup successful! Now login.");
 
-      // kthehu te Login (mbështet të dyja emrat e prop-it)
       const goBack = onSignupSuccess || onBackClick;
       if (goBack) {
-        setTimeout(() => goBack(), 600);
+        setTimeout(() => goBack(), 800);
       }
     } catch (err) {
-      setError(`Signup dështoi: ${err.message}`);
+      setError(`Signup failed: ${err.message}`);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Sign Up</h2>
+    <Card className="p-4 my-4">
+      <Card.Body>
+        <Card.Title className="mb-3">Sign Up</Card.Title>
 
-      {error ? <p style={{ color: "red" }}>{error}</p> : null}
-      {success ? <p style={{ color: "green" }}>{success}</p> : null}
+        <Form onSubmit={handleSubmit}>
 
-      <label>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          minLength="2"
-          required
-        />
-      </label>
+          {error && (
+            <div className="text-danger mb-3">{error}</div>
+          )}
 
-      <br />
+          {success && (
+            <div className="text-success mb-3">{success}</div>
+          )}
 
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          minLength="6"
-          required
-        />
-      </label>
+          <Form.Group className="mb-3" controlId="signupUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              value={username}
+              minLength="2"
+              required
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Form.Group>
 
-      <br />
+          <Form.Group className="mb-3" controlId="signupPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              minLength="6"
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Group>
 
-      <label>
-        Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </label>
+          <Form.Group className="mb-3" controlId="signupEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              required
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Form.Group>
 
-      <br />
+          <Form.Group className="mb-3" controlId="signupBirthday">
+            <Form.Label>Birthday</Form.Label>
+            <Form.Control
+              type="date"
+              value={birthday}
+              onChange={(e) => setBirthday(e.target.value)}
+            />
+          </Form.Group>
 
-      <label>
-        Birthday:
-        <input
-          type="date"
-          value={birthday}
-          onChange={(e) => setBirthday(e.target.value)}
-          // e bëjmë OPSIONALE (mos e blloko pa nevojë)
-        />
-      </label>
+          <div className="d-flex gap-2">
+            <Button variant="primary" type="submit">
+              Sign Up
+            </Button>
 
-      <br />
-      <br />
+            {(onBackClick || onSignupSuccess) && (
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={() =>
+                  onBackClick ? onBackClick() : onSignupSuccess()
+                }
+              >
+                Back
+              </Button>
+            )}
+          </div>
 
-      <button type="submit">Sign Up</button>{" "}
-      {(onBackClick || onSignupSuccess) && (
-        <button
-          type="button"
-          onClick={() => (onBackClick ? onBackClick() : onSignupSuccess())}
-        >
-          Back
-        </button>
-      )}
-    </form>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

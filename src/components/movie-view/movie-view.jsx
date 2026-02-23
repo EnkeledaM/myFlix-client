@@ -8,19 +8,28 @@ export const MovieView = ({ movie, onBackClick }) => {
   if (!movie) return null;
 
   return (
-    <Card>
+    <Card className="my-4">
       <Card.Header as="h5">{movie.Title}</Card.Header>
 
-      <Card.Img
-        variant="top"
-        src={movie.ImagePath}
-        alt={movie.Title}
-        style={{ maxHeight: "420px", objectFit: "cover" }}
-        onError={(e) => {
-          e.currentTarget.onerror = null;
-          e.currentTarget.src = placeholder;
-        }}
-      />
+      {movie.ImagePath ? (
+        <Card.Img
+          variant="top"
+          src={movie.ImagePath}
+          alt={movie.Title}
+          style={{ maxHeight: "420px", objectFit: "cover" }}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = placeholder;
+          }}
+        />
+      ) : (
+        <Card.Img
+          variant="top"
+          src={placeholder}
+          alt={movie.Title}
+          style={{ maxHeight: "420px", objectFit: "cover" }}
+        />
+      )}
 
       <Card.Body>
         <Card.Text>
