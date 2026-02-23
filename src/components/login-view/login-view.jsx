@@ -2,16 +2,19 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError("");
 
     const data = {
-      Username: username,
+      Username: username.trim(),
       Password: password
     };
 
@@ -22,7 +25,7 @@ export const LoginView = ({ onLoggedIn }) => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Login failed");
+          throw new Error("Invalid username or password");
         }
         return response.json();
       })
@@ -30,45 +33,55 @@ export const LoginView = ({ onLoggedIn }) => {
         if (data.user && data.token) {
           onLoggedIn(data.user, data.token);
         } else {
-          alert("Login failed");
+          setError("Login failed. Please try again.");
         }
       })
       .catch((error) => {
         console.error(error);
-        alert("Login failed");
+        setError("Login failed. Please check your credentials.");
       });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <Card className="p-4 my-4">
+      <Card.Body>
+        <Card.Title className="mb-3">Login</Card.Title>
 
-      <label>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-      </label>
+        <Form onSubmit={handleSubmit}>
 
-      <br />
+          {error && (
+            <div className="text-danger mb-3">
+              {error}
+            </div>
+          )}
 
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </label>
+          <Form.Group className="mb-3" controlId="loginUsername">
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              type="text"
+              value={username}
+              required
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Form.Group>
 
-      <br />
+          <Form.Group className="mb-3" controlId="loginPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Group>
 
-      <button type="submit">Login</button>
-    </form>
+          <Button variant="primary" type="submit">
+            Login
+          </Button>
+
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

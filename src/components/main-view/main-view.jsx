@@ -4,6 +4,7 @@ import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
 
+import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -45,73 +46,87 @@ export const MainView = () => {
     localStorage.clear();
   };
 
-  // 1) Nese s’ka user -> Login / Signup
-  if (!user) {
-    if (showSignup) {
-      return (
+  return (
+    <Container fluid="lg" className="px-4 py-3">
+      {/* 1️⃣ Nese s’ka user -> Login / Signup */}
+      {!user ? (
         <Row className="justify-content-md-center">
           <Col md={6} lg={5}>
-            <SignupView onSignupSuccess={() => setShowSignup(false)} />
-            <div className="d-grid mt-2">
-              <Button variant="secondary" onClick={() => setShowSignup(false)}>
-                Back to Login
-              </Button>
-            </div>
+            {showSignup ? (
+              <>
+                <SignupView onSignupSuccess={() => setShowSignup(false)} />
+                <div className="d-grid mt-2">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowSignup(false)}
+                  >
+                    Back to Login
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <LoginView onLoggedIn={handleLoggedIn} />
+                <div className="d-grid mt-2">
+                  <Button
+                    variant="primary"
+                    onClick={() => setShowSignup(true)}
+                  >
+                    Go to Signup
+                  </Button>
+                </div>
+              </>
+            )}
           </Col>
         </Row>
-      );
-    }
-
-    return (
-      <Row className="justify-content-md-center">
-        <Col md={6} lg={5}>
-          <LoginView onLoggedIn={handleLoggedIn} />
-          <div className="d-grid mt-2">
-            <Button variant="primary" onClick={() => setShowSignup(true)}>
-              Go to Signup
-            </Button>
-          </div>
-        </Col>
-      </Row>
-    );
-  }
-
-  // 2) Nese eshte zgjedhur film -> MovieView (detaje)
-  if (selectedMovie) {
-    return (
-      <Row className="justify-content-md-center">
-        <Col md={10} lg={8}>
-          <MovieView
-            movie={selectedMovie}
-            onBackClick={() => setSelectedMovie(null)}
-          />
-        </Col>
-      </Row>
-    );
-  }
-
-  // 3) Përndryshe -> shfaq grid me filma
-  return (
-    <>
-      <Row className="align-items-center my-3">
-        <Col>
-          <h1 className="m-0">myFlix</h1>
-        </Col>
-
-        <Col xs="auto">
-          <Button variant="outline-secondary" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Col>
-      </Row>
-
-      <Row>
-        {movies.map((movie) => (
-          <Col key={movie._id} xs={12} sm={6} md={4} lg={3} className="mb-3">
-            <MovieCard movie={movie} onMovieClick={(m) => setSelectedMovie(m)} />
+      ) : selectedMovie ? (
+        /* 2️⃣ Nese eshte zgjedhur film -> MovieView */
+        <Row className="justify-content-md-center">
+          <Col md={10} lg={8}>
+            <MovieView
+              movie={selectedMovie}
+              onBackClick={() => setSelectedMovie(null)}
+            />
           </Col>
-        ))}
-      </Row>
-    </>
+        </Row>
+      ) : (
+        /* 3️⃣ Përndryshe -> Grid me filma */
+        <>
+          <Row className="align-items-center mb-4">
+            <Col>
+              <h1 className="m-0">myFlix</h1>
+            </Col>
+            <Col xs="auto">
+              <Button
+                variant="outline-secondary"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </Col>
+          </Row>
+
+          <Row>
+            {movies
+              .filter((m) => m && m.Title)
+              .map((movie) => (
+                <Col
+                  key={movie._id}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  className="mb-4"
+                >
+                  <MovieCard
+                    movie={movie}
+                    onMovieClick={(m) => setSelectedMovie(m)}
+                  />
+                </Col>
+              ))}
+          </Row>
+        </>
+      )}
+    </Container>
   );
 };
