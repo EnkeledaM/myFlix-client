@@ -1,64 +1,31 @@
-
 import PropTypes from "prop-types";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import placeholder from "../../assets/interstellar.jpeg";
+import { useParams, Link } from "react-router-dom";
 
-export const MovieView = ({ movie, onBackClick }) => {
-  if (!movie) return null;
+export const MovieView = ({ movies }) => {
+  const { movieId } = useParams();
+
+  // Gjej filmin që ka _id të njëjtë me movieId nga URL
+  const movie = movies.find((m) => m._id === movieId);
+
+  // Nëse movies ende s’janë ngarkuar ose ID s’gjendet
+  if (!movie) {
+    return <div>Movie not found.</div>;
+  }
 
   return (
-    <Card className="my-4">
-      <Card.Header as="h5">{movie.Title}</Card.Header>
+    <div>
+      <h2>{movie.Title}</h2>
 
-      {movie.ImagePath ? (
-        <Card.Img
-          variant="top"
-          src={movie.ImagePath}
-          alt={movie.Title}
-          style={{ maxHeight: "420px", objectFit: "cover" }}
-          onError={(e) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = placeholder;
-          }}
-        />
-      ) : (
-        <Card.Img
-          variant="top"
-          src={placeholder}
-          alt={movie.Title}
-          style={{ maxHeight: "420px", objectFit: "cover" }}
-        />
-      )}
+      {/* Shembull detajesh - mund t’i shtojmë më shumë */}
+      {movie.Description && <p>{movie.Description}</p>}
 
-      <Card.Body>
-        <Card.Text>
-          <b>Description:</b> {movie.Description}
-        </Card.Text>
-
-        <Card.Text>
-          <b>Genre:</b> {movie.Genre?.Name}
-        </Card.Text>
-
-        <Card.Text>
-          <b>Director:</b> {movie.Director?.Name}
-        </Card.Text>
-
-        <Button variant="secondary" onClick={onBackClick}>
-          Back
-        </Button>
-      </Card.Body>
-    </Card>
+      <Link to="/">
+        <button>Back</button>
+      </Link>
+    </div>
   );
 };
 
 MovieView.propTypes = {
-  movie: PropTypes.shape({
-    Title: PropTypes.string.isRequired,
-    ImagePath: PropTypes.string,
-    Description: PropTypes.string,
-    Genre: PropTypes.shape({ Name: PropTypes.string }),
-    Director: PropTypes.shape({ Name: PropTypes.string }),
-  }),
-  onBackClick: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired,
 };
