@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -48,9 +50,10 @@ export const MainView = () => {
 
   return (
   <BrowserRouter>
+    <NavigationBar user={user} onLoggedOut={handleLogout} />
+
     <Container fluid="lg" className="px-4 py-3">
       <Routes>
-        {/* LOGIN */}
         <Route
           path="/login"
           element={
@@ -66,7 +69,6 @@ export const MainView = () => {
           }
         />
 
-        {/* SIGNUP */}
         <Route
           path="/signup"
           element={
@@ -82,7 +84,19 @@ export const MainView = () => {
           }
         />
 
-        {/* MOVIE VIEW */}
+        <Route
+          path="/profile"
+          element={
+            !user ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <Col>
+                <h2>Profile Page (coming next)</h2>
+              </Col>
+            )
+          }
+        />
+
         <Route
           path="/movies/:movieId"
           element={
@@ -100,7 +114,6 @@ export const MainView = () => {
           }
         />
 
-        {/* HOME - MOVIE LIST */}
         <Route
           path="/"
           element={
@@ -141,6 +154,9 @@ export const MainView = () => {
             )
           }
         />
+
+        {/* fallback: çdo path tjetër */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Container>
   </BrowserRouter>
