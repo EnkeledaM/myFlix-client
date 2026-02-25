@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Card, Button, Form, Alert, Spinner, Row, Col } from "react-bootstrap";
 import { MovieCard } from "../movie-card/movie-card";
 
+
 const API_URL = "https://test-heroku-exercise-7495d54af436.herokuapp.com";
 
 export const ProfileView = ({ user, token, movies = [], onUserUpdate }) => {
@@ -242,12 +243,19 @@ export const ProfileView = ({ user, token, movies = [], onUserUpdate }) => {
         <Card.Body>
           <h4 className="mb-3">Favorite Movies</h4>
 
-          {favoriteMovies.length === 0 ? (
-            <div>No favorite movies yet.</div>
-          ) : (
-            <Row>
-              {favoriteMovies.map((movie) => (
-                <Col key={movie._id} xs={12} sm={6} md={4} lg={3} className="mb-3">
+          <Row>
+            {favoriteMovies.length === 0 ? (
+              <Col>No favorite movies yet.</Col>
+            ) : (
+              favoriteMovies.map((movie) => (
+                <Col
+                  key={movie._id}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  className="mb-4"
+                >
                   <MovieCard movie={movie} />
                   <Button
                     variant="outline-danger"
@@ -258,9 +266,9 @@ export const ProfileView = ({ user, token, movies = [], onUserUpdate }) => {
                     Remove
                   </Button>
                 </Col>
-              ))}
-            </Row>
-          )}
+              ))
+            )}
+          </Row>
         </Card.Body>
       </Card>
 
