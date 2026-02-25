@@ -1,64 +1,80 @@
-
 import PropTypes from "prop-types";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import placeholder from "../../assets/interstellar.jpeg";
+import { useParams, Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
-export const MovieView = ({ movie, onBackClick }) => {
-  if (!movie) return null;
+export const MovieView = ({ movies, user, token, onUserUpdate }) => {
+  const { movieId } = useParams();
+
+  // Gjej filmin nga URL
+  const movie = movies.find((m) => m._id === movieId);
+
+  const addToFavorites = async () => {
+    const username = user?.Username;
+
+    if (!username || !token) {
+      alert("You are not logged in.");
+      return;
+    }
+
+    if (!movie?._id) {
+      alert("Movie not found.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://test-heroku-exercise-7495d54af436.herokuapp.com/users/${encodeURIComponent(
+          username
+        )}/movies/${movie._id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Add favorite failed:", res.status, text);
+        throw new Error("Add favorite failed");
+      }
+
+      const updatedUser = await res.json();
+
+      // update MainView state + localStorage
+      onUserUpdate(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      alert("Added to favorites!");
+    } catch (err) {
+      console.error(err);
+      alert("Could not add to favorites.");
+    }
+  };
+
+  if (!movie) return <div>Movie not found.</div>;
 
   return (
-    <Card className="my-4">
-      <Card.Header as="h5">{movie.Title}</Card.Header>
+    <div>
+      <h2>{movie.Title}</h2>
 
-      {movie.ImagePath ? (
-        <Card.Img
-          variant="top"
-          src={movie.ImagePath}
-          alt={movie.Title}
-          style={{ maxHeight: "420px", objectFit: "cover" }}
-          onError={(e) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = placeholder;
-          }}
-        />
-      ) : (
-        <Card.Img
-          variant="top"
-          src={placeholder}
-          alt={movie.Title}
-          style={{ maxHeight: "420px", objectFit: "cover" }}
-        />
-      )}
+      <Button variant="success" onClick={addToFavorites} className="mb-3">
+        Add to favorites
+      </Button>
 
-      <Card.Body>
-        <Card.Text>
-          <b>Description:</b> {movie.Description}
-        </Card.Text>
+      {movie.Description && <p>{movie.Description}</p>}
 
-        <Card.Text>
-          <b>Genre:</b> {movie.Genre?.Name}
-        </Card.Text>
-
-        <Card.Text>
-          <b>Director:</b> {movie.Director?.Name}
-        </Card.Text>
-
-        <Button variant="secondary" onClick={onBackClick}>
-          Back
-        </Button>
-      </Card.Body>
-    </Card>
+      <Link to="/">
+        <button>Back</button>
+      </Link>
+    </div>
   );
 };
 
 MovieView.propTypes = {
-  movie: PropTypes.shape({
-    Title: PropTypes.string.isRequired,
-    ImagePath: PropTypes.string,
-    Description: PropTypes.string,
-    Genre: PropTypes.shape({ Name: PropTypes.string }),
-    Director: PropTypes.shape({ Name: PropTypes.string }),
-  }),
-  onBackClick: PropTypes.func.isRequired,
+  movies: PropTypes.array.isRequired,
+  user: PropTypes.object,
+  token: PropTypes.string,
+  onUserUpdate: PropTypes.func.isRequired,
 };
