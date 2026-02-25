@@ -1,96 +1,172 @@
-# myFlix-client
+# myFlix Client
 
-Client-side React application for the myFlix app  
-(CareerFoundry Achievement 3)
+Client-side React application for the myFlix app (CareerFoundry Achievement 3).
 
----
-
-## 📌 Project Overview
-
-This project demonstrates:
-
-- React functional components  
-- useState hook for state management  
-- Conditional rendering  
-- Handling local static assets (poster images)  
-- Parcel bundling and transpilation  
-- Production build generation  
+This single-page application (SPA) allows users to browse movies, view movie details, manage their profile, and maintain a list of favorite movies.
 
 ---
 
-## 🚀 Features
+## 🚀 Live Demo
 
-- Displays a list of movies  
-- Shows movie details when a movie is clicked  
-- Displays poster image, description, genre, and director  
-- "Back" button returns to the movie list  
+(If deployed, add your link here)
 
 ---
 
-## 🛠 Built With
+## 🛠 Tech Stack
 
-- React  
-- Parcel  
-- JavaScript (ES6+)  
-- SCSS  
+- React
+- React Router
+- React Bootstrap
+- Parcel
+- JavaScript (ES6+)
+- REST API (Node.js / Express / MongoDB backend)
 
 ---
 
-## 📁 Project Structure
-
+## 📂 Project Structure
 myFlix-client
-├── src
-│ ├── assets
-│ │  ├── inception.jpeg
-│ │  ├── matrix.jpeg
-│ │  └── interstellar.jpeg
-│ ├── components
-│ │  ├── main-view
-│ │  │    └── main-view.jsx
-│ │  ├── movie-card
-│ │  │    └── movie-card.jsx
-│ │  └── movie-view
-│ │       └── movie-view.jsx
-│ ├── index.html
-│ ├── index.jsx
-│ └── index.scss
-├── dist
-├── package.json
-└── README.md
+
+package.json
+
+src
+
+index.jsx
+
+index.html
+
+index.scss
+
+components
+
+login-view
+
+signup-view
+
+main-view
+
+movie-card
+
+movie-view
+
+profile-view
+
+navigation-bar
+
 
 ---
 
-## ⚙️ Requirements
+## 🔐 Features
 
-- Node.js  
-- npm  
+### Authentication
+- User registration (Signup)
+- User login (JWT authentication)
+- Logout
+
+### Routing (React Router)
+- `/login`
+- `/signup`
+- `/` (Home – Movie List)
+- `/movies/:movieId`
+- `/profile`
+
+### Movie Features
+- View all movies
+- View movie details
+- Add movie to favorites
+- Remove movie from favorites
+
+### Profile Features
+- View user information
+- Update username, password, email, birthday
+- Delete account (deregister)
+- View list of favorite movies
 
 ---
 
-## 📦 Installation
+## ⚙ Installation
 
-```bash
+Clone the repository:
+
+
+git clone <your-repo-link>
+
+
+Navigate into the project folder:
+
+
+cd myFlix-client
+
+
+Install dependencies:
+
+
 npm install
 
 
-Run (Development)
+Start the development server:
+
 
 npm start
 
-or
 
-npx parcel src/index.html
+The app runs at:
 
-Then  open 
+
 http://localhost:1234
 
-Build (Production)
 
-npm run build
+---
+
+## 🔌 Backend API
+
+This application connects to the myFlix REST API hosted at:
 
 
-This generates a production-ready build inside the dist/ folder.
+https://test-heroku-exercise-7495d54af436.herokuapp.com
 
-🔗 Repository
 
-https://github.com/EnkeledaM/myFlix-client
+The API provides:
+
+- `/login`
+- `/users`
+- `/movies`
+- `/users/:Username`
+- `/users/:Username/movies/:MovieID`
+
+All protected endpoints require a JWT token.
+
+---
+
+## 🧪 Testing Overview
+
+The following flows were tested:
+
+1. Signup → Login
+2. Fetch movies (authenticated)
+3. Navigate to movie detail view
+4. Add movie to favorites
+5. Remove movie from favorites
+6. Navigate to profile view
+7. Update user information
+8. Delete account
+9. Logout
+
+All navigation is handled via React Router without page reload.
+
+---
+
+## 📦 Deployment
+
+The project can be deployed using:
+
+- Netlify
+- Vercel
+- Render
+- GitHub Pages (with configuration)
+
+---
+
+## 👩‍💻 Author
+Enkeleda M.
+
+
