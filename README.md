@@ -18,7 +18,7 @@ Client-side React application for the myFlix app (CareerFoundry Achievement 3).
 - Hosted on Netlify
 
 ## Live Demo
-- (add Netlify URL here after deployment)
+https://relaxed-beignet-21ff1a.netlify.app
 
 ## API
 - Backend (Heroku): https://test-heroku-exercise-7495d54af436.herokuapp.com/
