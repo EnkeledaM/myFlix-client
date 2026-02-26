@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { ProfileView } from "../profile-view/profile-view";
@@ -11,33 +11,41 @@ import { SignupView } from "../signup-view/signup-view";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+
+const API_URL = "https://test-heroku-exercise-7495d54af436.herokuapp.com";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [filterText, setFilterText] = useState("");
-  const filteredMovies = movies.filter((movie) =>
-  movie.Title.toLowerCase().includes(filterText.toLowerCase())
-);
 
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const storedToken = localStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-  const [token, setToken] = useState(localStorage.getItem("token"));
-
+  const filteredMovies = useMemo(() => {
+    return movies.filter((movie) =>
+      movie?.Title?.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }, [movies, filterText]);
 
   useEffect(() => {
     if (!token) return;
 
-    fetch("https://test-heroku-exercise-7495d54af436.herokuapp.com/movies", {
+    setIsLoading(true);
+    setError(null);
+
+    fetch(`${API_URL}/movies`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
       .then((data) => setMovies(data))
-      .catch((error) => console.error(error));
+      .catch((err) => setError(err.message))
+      .finally(() => setIsLoading(false));
   }, [token]);
 
   const handleLoggedIn = (user, token) => {
@@ -51,7 +59,8 @@ export const MainView = () => {
     setUser(null);
     setToken(null);
     setMovies([]);
-    localStorage.clear();
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
@@ -93,12 +102,16 @@ export const MainView = () => {
           <Route
             path="/profile"
             element={
-              <ProfileView
-                user={user}
-                token={token}
-                movies={movies}
-                onUserUpdate={setUser}
-              />
+              !user ? (
+                <Navigate to="/login" replace />
+              ) : (
+                <ProfileView
+                  user={user}
+                  token={token}
+                  movies={movies}
+                  onUserUpdate={setUser}
+                />
+              )
             }
           />
 
@@ -127,32 +140,33 @@ export const MainView = () => {
             element={
               !user ? (
                 <Navigate to="/login" replace />
+              ) : isLoading ? (
+                <Col>Loading movies...</Col>
+              ) : error ? (
+                <Col>Something went wrong: {error}</Col>
               ) : movies.length === 0 ? (
                 <Col>The list is empty!</Col>
               ) : (
                 <>
-
-
-                  <Row className="align-items-center mb-4">
+                  <Row className="align-items-center mb-3">
                     <Col>
                       <h1 className="m-0">myFlix</h1>
                     </Col>
                   </Row>
-                {/* ✅ 3.3: Search input */}
-                  <Row className="mb-4">
-                    <Col md={6} lg={4}>
-                      <Form.Control
+
+                  <Row className="mb-3">
+                    <Col md={6} lg={5}>
+                      <input
                         type="text"
-                        placeholder="Search movies..."
                         value={filterText}
                         onChange={(e) => setFilterText(e.target.value)}
+                        placeholder="Search movies..."
+                        className="form-control"
                       />
                     </Col>
                   </Row>
 
-
-<Row>
-                    {/* ✅ 3.4: përdor filteredMovies */}
+                  <Row>
                     {filteredMovies.map((movie) => (
                       <Col
                         key={movie._id}
@@ -176,7 +190,6 @@ export const MainView = () => {
             }
           />
 
-          {/* fallback: çdo path tjetër */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Container>
