@@ -12,9 +12,14 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
+  const [filterText, setFilterText] = useState("");
+  const filteredMovies = movies.filter((movie) =>
+  movie.Title.toLowerCase().includes(filterText.toLowerCase())
+);
 
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -127,27 +132,44 @@ export const MainView = () => {
               ) : (
                 <>
 
+
                   <Row className="align-items-center mb-4">
                     <Col>
                       <h1 className="m-0">myFlix</h1>
                     </Col>
                   </Row>
+                {/* ✅ 3.3: Search input */}
+                  <Row className="mb-4">
+                    <Col md={6} lg={4}>
+                      <Form.Control
+                        type="text"
+                        placeholder="Search movies..."
+                        value={filterText}
+                        onChange={(e) => setFilterText(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
 
-                  <Row>
-                    {movies
-                      .filter((m) => m && m.Title)
-                      .map((movie) => (
-                        <Col
-                          key={movie._id}
-                          xs={12}
-                          sm={6}
-                          md={4}
-                          lg={3}
-                          className="mb-4"
-                        >
-                          <MovieCard movie={movie} user={user} token={token} onUserUpdate={setUser} />
-                        </Col>
-                      ))}
+
+<Row>
+                    {/* ✅ 3.4: përdor filteredMovies */}
+                    {filteredMovies.map((movie) => (
+                      <Col
+                        key={movie._id}
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        lg={3}
+                        className="mb-4"
+                      >
+                        <MovieCard
+                          movie={movie}
+                          user={user}
+                          token={token}
+                          onUserUpdate={setUser}
+                        />
+                      </Col>
+                    ))}
                   </Row>
                 </>
               )
