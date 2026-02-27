@@ -11,6 +11,7 @@ import { SignupView } from "../signup-view/signup-view";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
 
 const API_URL = "https://test-heroku-exercise-7495d54af436.herokuapp.com";
 
@@ -18,17 +19,35 @@ export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [filterText, setFilterText] = useState("");
 
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
+  // ✅ NEW: genre filter
+  const [selectedGenre, setSelectedGenre] = useState("");
+
+  const [user, setUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user"))
+  );
   const [token, setToken] = useState(() => localStorage.getItem("token"));
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // ✅ NEW: build dropdown options from API data
+  const genreOptions = useMemo(() => {
+    return [...new Set(movies.map((m) => m?.Genre?.Name).filter(Boolean))].sort();
+  }, [movies]);
+
+  // ✅ UPDATED: filter by title AND genre
   const filteredMovies = useMemo(() => {
-    return movies.filter((movie) =>
-      movie?.Title?.toLowerCase().includes(filterText.toLowerCase())
-    );
-  }, [movies, filterText]);
+    return movies.filter((movie) => {
+      const matchesTitle = movie?.Title?.toLowerCase().includes(
+        filterText.toLowerCase()
+      );
+
+      const matchesGenre =
+        selectedGenre === "" || movie?.Genre?.Name === selectedGenre;
+
+      return matchesTitle && matchesGenre;
+    });
+  }, [movies, filterText, selectedGenre]);
 
   useEffect(() => {
     if (!token) return;
@@ -59,6 +78,8 @@ export const MainView = () => {
     setUser(null);
     setToken(null);
     setMovies([]);
+    setFilterText("");
+    setSelectedGenre(""); // ✅ reset genre too
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
@@ -154,7 +175,8 @@ export const MainView = () => {
                     </Col>
                   </Row>
 
-                  <Row className="mb-3">
+                  {/* ✅ Search + All genres dropdown (same row) */}
+                  <Row className="mb-3 align-items-center g-2">
                     <Col md={6} lg={5}>
                       <input
                         type="text"
@@ -163,6 +185,20 @@ export const MainView = () => {
                         placeholder="Search movies..."
                         className="form-control"
                       />
+                    </Col>
+
+                    <Col md={4} lg={3}>
+                      <Form.Select
+                        value={selectedGenre}
+                        onChange={(e) => setSelectedGenre(e.target.value)}
+                      >
+                        <option value="">All genres</option>
+                        {genreOptions.map((g) => (
+                          <option key={g} value={g}>
+                            {g}
+                          </option>
+                        ))}
+                      </Form.Select>
                     </Col>
                   </Row>
 
